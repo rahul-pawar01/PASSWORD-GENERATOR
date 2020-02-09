@@ -1,0 +1,85 @@
+//object literal with all functions 
+const resultP = document.getElementById('resultP');
+const clipB = document.getElementById('clipboard');
+const lenPass = document.getElementById('length');
+const lowCase = document.getElementById('lowercase');
+const uppCase = document.getElementById('uppercase');
+const symS = document.getElementById('symbols');
+const  numS= document.getElementById('numbers');
+const genBtn = document.getElementById('generate');
+
+clipB.addEventListener('click',()=>{
+    const textArea =document.createElement('textarea');
+    const password= resultP.innerHTML;
+    if(!password)
+    {
+        return;
+    }
+    textArea.value=password;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    textArea.remove();
+    alert('password copied');
+
+}
+);
+const ObjFunc = {
+    low : gnrtRanLow,
+    upp : gnrtRanUpp,
+    sym : gnrtRanSym,
+    num : gnrtRanNum
+};
+
+genBtn.addEventListener('click',()=>
+{
+    const length=+lenPass.value;
+    const uppClick=uppCase.checked;
+    const symClick=symS.checked;
+    const lowClick=lowCase.checked;
+    const numClick=numS.checked;
+   resultP.innerHTML = PassGenerator(lowClick,uppClick,symClick,numClick,length);
+
+});
+
+function PassGenerator(low,upp,sym,num,length)
+{
+    let generatedPass='';
+   const countClicked=low+upp+sym+num;
+   const arrayClcked = [{low},{upp},{sym},{num}].filter(item => 
+      Object.values(item)[0]
+  );
+
+  if(countClicked==0)
+  {
+      return '';
+  }
+
+  for(let i=0;i<length;i=i+countClicked)
+  {
+      arrayClcked.forEach(item =>{
+          const funCount=Object.keys(item)[0];
+           generatedPass=generatedPass+ObjFunc[funCount]();
+      });
+  }
+      finalPass=generatedPass.slice(0,length);
+    return finalPass;
+}
+//generatingfunctions for checkboxes
+function gnrtRanLow(){
+    return String.fromCharCode(Math.floor(Math.random()*26)+97);
+}
+
+function gnrtRanUpp(){
+    return String.fromCharCode(Math.floor(Math.random()*26)+65);  
+}
+
+ function gnrtRanNum(){
+     return String.fromCharCode(Math.floor(Math.random()*26)+48); 
+}
+
+function gnrtRanSym() 
+{
+    const Sym='!@#$%^&*(){}[]?/';
+     return Sym[Math.floor(Math.random()*Sym.length)]; //selecting string by index
+}
